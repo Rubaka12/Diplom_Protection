@@ -6,7 +6,7 @@ from functools import partial
 from PyQt6.QtCore import Qt
 import sys
 
-from db.database import register_equipment
+from db.database import register_equipment, find_names
 # a; d; 123; 1234; d
 
 # Функция для преобразования текста в верхний регистр с сохранением позиции курсора
@@ -19,7 +19,7 @@ def to_uppercase_lineedit(lineedit):
         lineedit.setText(new_text)
         lineedit.setCursorPosition(cursor_pos)
 
-class RegistrationWindow(QWidget):
+class RegistrationWindowA(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Регистрация/Редактирование")
@@ -41,6 +41,20 @@ class RegistrationWindow(QWidget):
             }
         """)
         self.layout.addWidget(self.header)
+        self.name = find_names()
+        self.user_combobox = QComboBox()
+        self.user_combobox.addItems([""])
+        for i in self.name:
+            self.user_combobox.addItems(i)
+        self.user_combobox.setStyleSheet("""
+                    QComboBox {
+                        font-weight: bold;
+                        padding: 5px;
+                        border: 1px solid #4CAF50;
+                        border-radius: 4px;
+                    }
+                """)
+        self.layout.addWidget(self.user_combobox)
 
         self.name_label = QLabel("Имя")
         self.name_label.setStyleSheet("font-weight: bold; border-bottom: 2px solid #4CAF50;")

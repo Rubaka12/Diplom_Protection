@@ -489,3 +489,28 @@ def chat_err(equipment_id):
     finally:
         cursor.close()
         conn.close()
+
+def find_user(login, password):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+    query = """
+                SELECT id 	
+                FROM Engeneeres
+                WHERE login = %s AND password = %s
+            """
+    id = cursor.execute(query, (login,password))
+    cursor.close()
+    conn.close()
+    return id
+
+def find_names():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+    query = """
+                    SELECT Name	
+                    FROM medical_equipment
+                """
+    name = cursor.execute(query)
+    cursor.close()
+    conn.close()
+    return name
