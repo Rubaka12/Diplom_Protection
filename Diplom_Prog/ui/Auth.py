@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (
     QFrame, QHBoxLayout, QWidget
 )
 from PyQt6.QtCore import Qt
+from db.database import find_user
 
 class AuthWindow(QDialog):
     def __init__(self, main_window_start=None):
@@ -79,19 +80,27 @@ class AuthWindow(QDialog):
 
     def authenticate(self):
         from ui.main_window import MainWindow
+        from ui.main_window_admin import MainWindowA
         login = self.login_input.text()
         password = self.password_input.text()
 
-        if login == "admin" and password == "admin":
+        if find_user(login, password) == 1:
+            if self.main_window_start:
+                self.main_window_start.close()  # Закрываем стартовое окно
+            self.accept()  # Закрываем окно авторизации
+
+            self.main_app_window = MainWindowA()
+            self.main_app_window.show()
+        elif find_user(login, password) == 0:
+            self.login_input.setStyleSheet("border: 2px solid red;")
+            self.password_input.setStyleSheet("border: 2px solid red;")
+        else:
             if self.main_window_start:
                 self.main_window_start.close()  # Закрываем стартовое окно
             self.accept()  # Закрываем окно авторизации
 
             self.main_app_window = MainWindow()
             self.main_app_window.show()
-        else:
-            self.login_input.setStyleSheet("border: 2px solid red;")
-            self.password_input.setStyleSheet("border: 2px solid red;")
 
     def go_back(self):
         # Показываем стартовое окно и закрываем авторизацию
